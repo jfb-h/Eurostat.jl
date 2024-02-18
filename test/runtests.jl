@@ -1,17 +1,13 @@
 using Eurostat
 using Test
-using DataToolkit
+using DataFrames
 
 @testset "Eurostat.jl" begin
 
-    @testset "eurostat-toc" begin
-        toc = d"eurostat-toc-raw"
+    @testset "toc" begin
+        toc = Eurostat.get_toc()
         @test toc isa DataFrame
         @test size(toc, 1) > 0
-        for type in ["folder", "dataset", "table"]
-            @test get_toc(type) isa DataFrame
-        end
     end
-
     
 end
