@@ -1,0 +1,39 @@
+data_config_version = 0
+uuid = "64df1351-4522-4938-9a8f-7fafde8a9397"
+name = "Eurostat"
+plugins = ["store", "defaults", "memorise", "cache"]
+
+[config.defaults.storage._]
+checksum = "auto"
+
+[[eurostat-toc-folder]]
+uuid = "c9e0fbef-d1e9-4f27-856b-ab648d47f9f8"
+description = "List of all eurostat folders"
+
+    [[eurostat-toc-folder.loader]]
+    driver = "julia"
+    function = '''
+    function (; var"data#eurostat-toc-raw")
+        @import DataFrames
+        toc = var"data#eurostat-toc-raw"
+        DataFrames.subset!(toc, :type => ByRow(==("folder")))
+        toc.title = strip.(toc.title)
+        toc
+    end
+    '''
+    type = "DataFrames.DataFrame"
+
+        [eurostat-toc-folder.loader.arguments]
+        "data#eurostat-toc-raw" = "📇DATASET<<eurostat-toc-raw::DataFrames.DataFrame>>"
+
+[[eurostat-toc-raw]]
+uuid = "2637b956-9cfd-46a5-9537-cdb82759007f"
+description = "Full eurostat table of contents with files and folders"
+
+    [[eurostat-toc-raw.storage]]
+    driver = "web"
+    checksum = "k12:11e1b239542d9e008f32788a27b7f502"
+    url = "https://ec.europa.eu/eurostat/api/dissemination/catalogue/toc/txt?lang=en"
+
+    [[eurostat-toc-raw.loader]]
+    driver = "csv"
